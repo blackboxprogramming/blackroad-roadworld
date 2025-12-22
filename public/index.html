@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlackRoad Earth | RoadWorld Module</title>
+
+    <!-- MapLibre GL -->
+    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../src/css/main.css">
+</head>
+<body>
+    <div id="map"></div>
+    <div class="crosshair"></div>
+
+    <!-- Header -->
+    <div class="ui-overlay header">
+        <div>
+            <div class="logo">BLACKROAD EARTH</div>
+            <div class="logo-sub">ROADWORLD MODULE</div>
+        </div>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value highlight" id="zoom-level">1.0</div>
+                <div class="stat-label">Zoom Level</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="altitude">10,000 km</div>
+                <div class="stat-label">Altitude</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="resolution">10 km/px</div>
+                <div class="stat-label">Resolution</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="coordinates">0°, 0°</div>
+                <div class="stat-label">Center</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="globe-mode-indicator">
+        <div class="mode-dot"></div>
+        <span id="view-mode">GLOBE VIEW</span>
+    </div>
+
+    <!-- Search -->
+    <div class="ui-overlay search-container">
+        <input type="text" class="search-input" id="search" placeholder="Search any location... (Times Square, Eiffel Tower, 123 Main St)">
+        <button class="search-btn" id="search-btn">FLY TO</button>
+    </div>
+
+    <!-- Zoom Panel -->
+    <div class="ui-overlay zoom-panel">
+        <div class="zoom-title">DETAIL LEVEL</div>
+        <div class="zoom-bar">
+            <div class="zoom-fill" id="zoom-fill" style="width: 5%"></div>
+        </div>
+        <div class="zoom-labels">
+            <span>Space</span>
+            <span>Street</span>
+        </div>
+        <div class="scale-list">
+            <div class="scale-item active" data-min="0" data-max="3">
+                <span class="scale-icon">🌍</span>
+                <span>Planet View</span>
+            </div>
+            <div class="scale-item" data-min="3" data-max="6">
+                <span class="scale-icon">🗺️</span>
+                <span>Continent</span>
+            </div>
+            <div class="scale-item" data-min="6" data-max="10">
+                <span class="scale-icon">🏔️</span>
+                <span>Region / Country</span>
+            </div>
+            <div class="scale-item" data-min="10" data-max="14">
+                <span class="scale-icon">🏙️</span>
+                <span>City</span>
+            </div>
+            <div class="scale-item" data-min="14" data-max="17">
+                <span class="scale-icon">🏘️</span>
+                <span>Neighborhood</span>
+            </div>
+            <div class="scale-item" data-min="17" data-max="20">
+                <span class="scale-icon">🏠</span>
+                <span>Street Level</span>
+            </div>
+            <div class="scale-item" data-min="20" data-max="24">
+                <span class="scale-icon">🚶</span>
+                <span>Building Detail</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Panel -->
+    <div class="ui-overlay info-panel">
+        <div class="info-section">
+            <div class="info-label">Location</div>
+            <div class="info-value large" id="location-name">Earth</div>
+        </div>
+        <div class="info-section">
+            <div class="info-label">Latitude</div>
+            <div class="info-value" id="lat">0.000000°</div>
+        </div>
+        <div class="info-section">
+            <div class="info-label">Longitude</div>
+            <div class="info-value" id="lng">0.000000°</div>
+        </div>
+        <div class="info-section">
+            <div class="info-label">Tile Coordinates</div>
+            <div class="info-value" id="tile-coords">z0 / x0 / y0</div>
+        </div>
+        <div class="info-section">
+            <div class="info-label">Saved Locations</div>
+            <div class="info-value" id="saved-count">0</div>
+        </div>
+    </div>
+
+    <!-- Layer Selection -->
+    <div class="ui-overlay layer-panel">
+        <button class="layer-btn active" data-style="satellite">🛰️ Satellite</button>
+        <button class="layer-btn" data-style="streets">🗺️ Streets</button>
+        <button class="layer-btn" data-style="dark">🌙 Dark</button>
+        <button class="layer-btn" data-style="terrain">🏔️ Terrain</button>
+        <button class="layer-btn" data-style="hybrid">🔀 Hybrid</button>
+    </div>
+
+    <!-- Quick Locations -->
+    <div class="ui-overlay quick-locations">
+        <button class="quick-btn" data-lat="40.7580" data-lng="-73.9855" data-zoom="18">Times Square <span>NYC</span></button>
+        <button class="quick-btn" data-lat="48.8584" data-lng="2.2945" data-zoom="18">Eiffel Tower <span>Paris</span></button>
+        <button class="quick-btn" data-lat="35.6595" data-lng="139.7004" data-zoom="18">Shibuya Crossing <span>Tokyo</span></button>
+        <button class="quick-btn" data-lat="51.5007" data-lng="-0.1246" data-zoom="18">Big Ben <span>London</span></button>
+        <button class="quick-btn" data-lat="40.6892" data-lng="-74.0445" data-zoom="17">Statue of Liberty <span>NYC</span></button>
+        <button class="quick-btn" data-lat="37.8199" data-lng="-122.4783" data-zoom="16">Golden Gate <span>SF</span></button>
+    </div>
+
+    <!-- Controls -->
+    <div class="ui-overlay controls">
+        <button class="ctrl-btn" id="btn-home" title="Home">🏠</button>
+        <button class="ctrl-btn" id="btn-north" title="Reset North">🧭</button>
+        <div class="divider"></div>
+        <button class="ctrl-btn" id="btn-zoom-in" title="Zoom In">+</button>
+        <button class="ctrl-btn" id="btn-zoom-out" title="Zoom Out">−</button>
+        <div class="divider"></div>
+        <button class="ctrl-btn" id="btn-3d" title="3D Buildings">🏢</button>
+        <button class="ctrl-btn" id="btn-globe" title="Globe View">🌐</button>
+        <div class="divider"></div>
+        <button class="ctrl-btn" id="btn-locate" title="My Location">📍</button>
+        <button class="ctrl-btn" id="btn-save" title="Save Location">💾</button>
+    </div>
+
+    <!-- Instructions -->
+    <div class="ui-overlay instructions">
+        <div><kbd>DRAG</kbd> Pan / Rotate</div>
+        <div><kbd>SCROLL</kbd> Zoom</div>
+        <div><kbd>CTRL+DRAG</kbd> Tilt</div>
+        <div><kbd>RIGHT-CLICK</kbd> Rotate</div>
+    </div>
+
+    <!-- JavaScript Modules -->
+    <script type="module" src="../src/js/main.js"></script>
+</body>
+</html>
