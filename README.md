@@ -4,15 +4,30 @@ BlackRoad Earth street-level exploration module built with MapLibre GL.
 
 ## Features
 
+### Core Features
 - **Globe View**: Start from space and zoom down to street level
-- **Multiple Map Styles**: Satellite, Streets, Dark, Terrain, Hybrid
+- **5 Map Styles**: Satellite, Streets, Dark, Terrain, Hybrid
 - **Location Search**: Search any location worldwide using Nominatim
-- **Quick Locations**: Pre-configured famous landmarks
-- **3D Controls**: Tilt, rotate, and pitch the map
+- **Quick Locations**: 6 pre-configured famous landmarks
 - **User Location**: Find and navigate to your current location
-- **Save Locations**: Save favorite places to local storage
-- **History Tracking**: Track search and navigation history
 - **Responsive UI**: Works on desktop and mobile
+
+### Advanced Features (NEW!)
+- **3D Buildings 🏢**: Vector-based building extrusion with height data
+- **Custom Markers 🎯**: Create categorized markers (favorite, work, home, travel, food, custom)
+- **Measurement Tools 📏**: Measure distances and areas with Haversine formula
+- **URL Sharing 🔗**: Generate shareable links with exact position and view
+- **Saved Locations 💾**: Save and manage favorite locations
+- **Tools Panel 🛠️**: Comprehensive tools menu with organized sections
+- **Real-time Stats**: Live altitude, resolution, and coordinate display
+- **Notifications**: Toast-style user feedback system
+
+### Technical Features
+- **LocalStorage**: Persistent markers and settings
+- **URL Parameters**: Deep linking support
+- **Geospatial Calculations**: Accurate distance and area measurements
+- **Interactive Panels**: Tools, markers, and saved locations UI
+- **History Tracking**: Track search and navigation history
 
 ## Technology Stack
 
@@ -36,7 +51,11 @@ roadworld/
 │       ├── mapManager.js   # Map initialization and control
 │       ├── uiController.js # UI updates and interactions
 │       ├── searchService.js # Location search
-│       └── storageManager.js # Local storage management
+│       ├── storageManager.js # Local storage management
+│       ├── buildingsManager.js # 3D buildings layer
+│       ├── markerManager.js # Custom markers system
+│       ├── measurementTools.js # Distance/area measurement
+│       └── urlManager.js   # URL sharing and parameters
 ├── package.json
 ├── wrangler.toml
 └── README.md
