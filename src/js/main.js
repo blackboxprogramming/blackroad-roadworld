@@ -6,6 +6,9 @@ import { BuildingsManager } from './buildingsManager.js';
 import { MarkerManager } from './markerManager.js';
 import { MeasurementTools } from './measurementTools.js';
 import { URLManager } from './urlManager.js';
+import { GameEngine } from './gameEngine.js';
+import { PlayerAvatar } from './playerAvatar.js';
+import { CollectiblesRenderer } from './collectiblesRenderer.js';
 
 class RoadWorldApp {
     constructor() {
@@ -17,6 +20,12 @@ class RoadWorldApp {
         this.markerManager = null;
         this.measurementTools = null;
         this.urlManager = null;
+
+        // Game components
+        this.gameEngine = null;
+        this.playerAvatar = null;
+        this.collectiblesRenderer = null;
+        this.gameActive = false;
     }
 
     async init() {
@@ -63,7 +72,169 @@ class RoadWorldApp {
         // Load saved markers
         this.markerManager.loadMarkersFromStorage();
 
+        // Initialize game engine (but don't activate yet)
+        this.gameEngine = new GameEngine(this.mapManager, this.storageManager);
+        this.playerAvatar = new PlayerAvatar(this.mapManager, this.gameEngine);
+        this.collectiblesRenderer = new CollectiblesRenderer(this.mapManager, this.gameEngine);
+
+        // Setup game toggle
+        this.setupGameToggle();
+
         console.log('RoadWorld initialized');
+    }
+
+    setupGameToggle() {
+        const toggle = document.getElementById('game-toggle');
+
+        toggle.addEventListener('click', () => {
+            this.gameActive = !this.gameActive;
+
+            if (this.gameActive) {
+                this.activateGameMode();
+                toggle.classList.add('active');
+            } else {
+                this.deactivateGameMode();
+                toggle.classList.remove('active');
+            }
+        });
+    }
+
+    activateGameMode() {
+        console.log('🎮 Game Mode Activated!');
+
+        // Initialize game
+        this.gameEngine.init();
+
+        // Create player avatar
+        this.playerAvatar.create();
+
+        // Show game HUD
+        document.getElementById('game-hud').style.display = 'block';
+
+        // Setup map click to move player
+        this.mapManager.map.on('click', this.onMapClickGame.bind(this));
+
+        // Setup map movement to generate collectibles
+        this.mapManager.map.on('moveend', this.onMapMoveGame.bind(this));
+
+        // Initial HUD update
+        this.updateGameHUD();
+
+        // Show collectibles
+        this.collectiblesRenderer.renderAll();
+
+        this.showNotification('🎮 Game Mode Activated! Click to move your avatar.');
+    }
+
+    deactivateGameMode() {
+        console.log('🎮 Game Mode Deactivated');
+
+        // Hide game HUD
+        document.getElementById('game-hud').style.display = 'none';
+
+        // Remove player avatar
+        this.playerAvatar.remove();
+
+        // Clear collectibles
+        this.collectiblesRenderer.clearAll();
+
+        // Remove map click handler (would need to track the handler)
+        // For now, game click will just be ignored when not active
+
+        this.showNotification('Game Mode Deactivated');
+    }
+
+    onMapClickGame(e) {
+        if (!this.gameActive) return;
+
+        const lngLat = [e.lngLat.lng, e.lngLat.lat];
+
+        // Move player
+        const distance = this.gameEngine.movePlayer(lngLat);
+
+        // Update avatar position
+        this.playerAvatar.updatePosition(lngLat);
+
+        // Award XP for movement (1 XP per 10 meters)
+        if (distance > 10) {
+            const xp = Math.floor(distance / 10);
+            this.gameEngine.addXP(xp, 'movement');
+        }
+
+        // Check for level up
+        const levelUp = this.gameEngine.checkLevelUp();
+        if (levelUp) {
+            this.onLevelUp(levelUp);
+        }
+
+        // Update HUD
+        this.updateGameHUD();
+
+        // Refresh visible collectibles
+        this.collectiblesRenderer.refreshVisibleCollectibles();
+    }
+
+    onMapMoveGame() {
+        if (!this.gameActive) return;
+
+        // Generate new collectibles when map moves
+        const zoom = this.mapManager.getZoom();
+        if (zoom >= 14) {
+            this.gameEngine.generateCollectibles();
+            this.collectiblesRenderer.refreshVisibleCollectibles();
+        }
+    }
+
+    onLevelUp(levelInfo) {
+        console.log(`🎉 LEVEL UP! Now level ${levelInfo.level}`);
+
+        // Update avatar
+        this.playerAvatar.updateLevel();
+
+        // Show special notification
+        const notification = document.createElement('div');
+        notification.className = 'notification level-up-notification';
+        notification.innerHTML = `
+            <div style="font-size: 20px;">🎉 LEVEL UP!</div>
+            <div style="font-size: 16px; margin-top: 4px;">Level ${levelInfo.level}</div>
+        `;
+        notification.style.background = 'linear-gradient(135deg, #FFD700, #FFA500)';
+        notification.style.color = '#000';
+        notification.style.fontWeight = '700';
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.animation = 'slideIn 0.3s ease-out reverse';
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+
+    updateGameHUD() {
+        const player = this.gameEngine.player;
+        const stats = this.gameEngine.getPlayerStats();
+        const inventory = this.gameEngine.getInventorySummary();
+
+        // Level and XP
+        document.getElementById('hud-level').textContent = player.level;
+        document.getElementById('hud-xp').textContent = player.xp;
+        document.getElementById('hud-xp-next').textContent = player.xpToNextLevel;
+        document.getElementById('hud-xp-bar').style.width = stats.xpProgress + '%';
+
+        // Inventory
+        document.getElementById('hud-stars').textContent = inventory.stars;
+        document.getElementById('hud-gems').textContent = inventory.gems;
+        document.getElementById('hud-trophies').textContent = inventory.trophies;
+        document.getElementById('hud-keys').textContent = inventory.keys;
+
+        // Stats
+        const distanceKm = stats.distanceTraveled < 1000 ?
+            `${stats.distanceTraveled.toFixed(0)} m` :
+            `${(stats.distanceTraveled / 1000).toFixed(2)} km`;
+        document.getElementById('hud-distance').textContent = distanceKm;
+        document.getElementById('hud-collected').textContent = stats.itemsCollected;
     }
 
     setupMapEvents() {

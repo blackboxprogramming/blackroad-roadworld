@@ -235,6 +235,55 @@
         </div>
     </div>
 
+    <!-- Game HUD -->
+    <div class="game-hud" id="game-hud" style="display: none;">
+        <div class="hud-section">
+            <div class="hud-label">Level</div>
+            <div class="hud-value" id="hud-level">1</div>
+            <div class="hud-progress">
+                <div class="hud-progress-bar" id="hud-xp-bar" style="width: 0%"></div>
+            </div>
+            <div class="hud-label" style="margin-top: 4px; font-size: 8px;">
+                <span id="hud-xp">0</span> / <span id="hud-xp-next">100</span> XP
+            </div>
+        </div>
+
+        <div class="hud-section">
+            <div class="hud-label">Inventory</div>
+            <div class="hud-inventory">
+                <div class="hud-item">
+                    <span class="hud-item-icon">⭐</span>
+                    <span class="hud-item-count" id="hud-stars">0</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-item-icon">💎</span>
+                    <span class="hud-item-count" id="hud-gems">0</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-item-icon">🏆</span>
+                    <span class="hud-item-count" id="hud-trophies">0</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-item-icon">🗝️</span>
+                    <span class="hud-item-count" id="hud-keys">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hud-section">
+            <div class="hud-label">Stats</div>
+            <div style="font-size: 11px; line-height: 1.6;">
+                <div>🚶 <span id="hud-distance">0 m</span></div>
+                <div>✨ <span id="hud-collected">0</span> items</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Toggle Button -->
+    <button class="game-toggle-btn" id="game-toggle" title="Toggle Game Mode">
+        🎮
+    </button>
+
     <!-- JavaScript Modules -->
     <script type="module" src="../src/js/main.js"></script>
 </body>
