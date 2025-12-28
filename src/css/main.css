@@ -2997,3 +2997,927 @@ body[data-time="night"] { }
         flex-wrap: wrap;
     }
 }
+
+/* ========================================
+   v6.0 ULTIMATE FEATURES
+   ======================================== */
+
+/* Day/Night Cycle */
+.day-night-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 50;
+    transition: background 2s ease;
+}
+
+.time-display {
+    position: fixed;
+    top: 75px;
+    right: 200px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background: rgba(10, 15, 30, 0.9);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 20px;
+    z-index: 100;
+}
+
+.time-icon {
+    font-size: 24px;
+}
+
+.time-info {
+    text-align: center;
+}
+
+.time-clock {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #00d4ff;
+}
+
+.time-period {
+    font-size: 10px;
+    opacity: 0.7;
+}
+
+.time-bonus {
+    background: rgba(255, 215, 0, 0.2);
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    color: #FFD700;
+}
+
+.time-notification {
+    position: fixed;
+    top: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 24px;
+    background: rgba(10, 15, 30, 0.95);
+    border: 1px solid rgba(0, 212, 255, 0.5);
+    border-radius: 8px;
+    z-index: 500;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* World Events Panel */
+.world-events-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    max-width: 95vw;
+    max-height: 80vh;
+    background: linear-gradient(135deg, rgba(20, 30, 50, 0.98), rgba(10, 15, 30, 0.98));
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    z-index: 600;
+    overflow: hidden;
+}
+
+.events-content {
+    max-height: calc(80vh - 60px);
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.events-section {
+    margin-bottom: 20px;
+}
+
+.events-section h4 {
+    font-size: 14px;
+    margin-bottom: 12px;
+    color: #00d4ff;
+}
+
+.event-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-left: 3px solid #00d4ff;
+}
+
+.event-card.epic { border-left-color: #9b59b6; }
+.event-card.legendary { border-left-color: #FFD700; }
+.event-card.rare { border-left-color: #3498db; }
+
+.event-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.event-icon { font-size: 24px; }
+.event-name { font-weight: 600; flex: 1; }
+.event-timer {
+    font-family: 'Orbitron', sans-serif;
+    color: #ff6b35;
+}
+
+.event-progress {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    margin-top: 10px;
+}
+
+.event-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #00d4ff, #0066ff);
+    border-radius: 2px;
+}
+
+.event-notification {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    padding: 20px 30px;
+    background: linear-gradient(135deg, rgba(20, 30, 50, 0.98), rgba(10, 15, 30, 0.98));
+    border: 2px solid #00d4ff;
+    border-radius: 16px;
+    z-index: 700;
+    opacity: 0;
+    transition: all 0.3s ease-out;
+}
+
+.event-notification.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Pet Panel */
+.pet-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 450px;
+    max-width: 95vw;
+    max-height: 80vh;
+    background: linear-gradient(135deg, rgba(20, 30, 50, 0.98), rgba(10, 15, 30, 0.98));
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 16px;
+    z-index: 600;
+    overflow: hidden;
+}
+
+.pet-content {
+    padding: 20px;
+    max-height: calc(80vh - 60px);
+    overflow-y: auto;
+}
+
+.active-pet-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.active-pet-icon { font-size: 40px; }
+.active-pet-info { flex: 1; }
+.active-pet-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.active-pet-xp-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    margin: 8px 0;
+}
+
+.active-pet-xp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00d4ff, #0066ff);
+    border-radius: 2px;
+}
+
+.pet-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.pet-card {
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.pet-card:hover:not(.locked) {
+    border-color: rgba(0, 212, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.pet-card.equipped {
+    border-color: #00d4ff;
+    background: rgba(0, 212, 255, 0.1);
+}
+
+.pet-card.locked { opacity: 0.5; cursor: not-allowed; }
+.pet-card-icon { font-size: 28px; }
+.pet-card-name { font-size: 11px; margin-top: 5px; }
+
+.pet-marker {
+    width: 40px;
+    height: 40px;
+    background: rgba(10, 15, 30, 0.9);
+    border: 2px solid #00d4ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
+
+.pet-marker.legendary { border-color: #FFD700; }
+.pet-marker.epic { border-color: #9b59b6; }
+
+/* Treasure Hunt Panel */
+.treasure-hunt-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    max-width: 95vw;
+    max-height: 80vh;
+    background: linear-gradient(135deg, rgba(20, 30, 50, 0.98), rgba(10, 15, 30, 0.98));
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 16px;
+    z-index: 600;
+    overflow: hidden;
+}
+
+.hunt-content {
+    padding: 20px;
+    max-height: calc(80vh - 60px);
+    overflow-y: auto;
+}
+
+.hunt-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    border-left: 3px solid #00d4ff;
+}
+
+.hunt-card.legendary { border-left-color: #FFD700; }
+.hunt-card.epic { border-left-color: #9b59b6; }
+
+.hunt-card-icon { font-size: 32px; }
+.hunt-card-info { flex: 1; }
+.hunt-card-name { font-weight: 600; margin-bottom: 4px; }
+.hunt-card-desc { font-size: 12px; opacity: 0.7; }
+
+.hunt-start-btn {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #00d4ff, #0066ff);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.hunt-marker {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #FFD700, #ff6b35);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    position: relative;
+    animation: huntPulse 2s ease-in-out infinite;
+}
+
+.hunt-marker.visited {
+    background: #27ae60;
+    animation: none;
+}
+
+.hunt-marker.current {
+    animation: huntGlow 1s ease-in-out infinite;
+}
+
+@keyframes huntPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes huntGlow {
+    0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+    50% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.8); }
+}
+
+.hunt-complete-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.hunt-complete-content {
+    text-align: center;
+    padding: 40px;
+}
+
+.hunt-complete-content .hunt-complete-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    animation: bounceIn 0.5s ease-out;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* Skill Tree Panel */
+.skill-tree-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    max-width: 95vw;
+    max-height: 85vh;
+    background: linear-gradient(135deg, rgba(20, 30, 50, 0.98), rgba(10, 15, 30, 0.98));
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 16px;
+    z-index: 600;
+    overflow: hidden;
+}
+
+.skill-content {
+    padding: 20px;
+    max-height: calc(85vh - 60px);
+    overflow-y: auto;
+}
+
+.skill-points-display {
+    text-align: center;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.skill-points-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #FFD700;
+}
+
+.skill-branch {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    border-left: 3px solid var(--branch-color);
+}
+
+.branch-header {
+    margin-bottom: 15px;
+}
+
+.branch-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: var(--branch-color);
+}
+
+.branch-skills {
+    display: flex;
+    gap: 15px;
+}
+
+.skill-node {
+    width: 60px;
+    height: 60px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: not-allowed;
+    position: relative;
+    opacity: 0.5;
+}
+
+.skill-node.available {
+    border-color: var(--branch-color);
+    opacity: 1;
+    cursor: pointer;
+    animation: skillAvailable 1.5s ease-in-out infinite;
+}
+
+.skill-node.unlocked {
+    background: var(--branch-color);
+    border-color: var(--branch-color);
+    opacity: 1;
+    box-shadow: 0 0 15px var(--branch-color);
+}
+
+@keyframes skillAvailable {
+    0%, 100% { box-shadow: 0 0 5px var(--branch-color); }
+    50% { box-shadow: 0 0 15px var(--branch-color); }
+}
+
+.skill-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(10, 15, 30, 0.98);
+    border: 1px solid rgba(0, 212, 255, 0.5);
+    border-radius: 8px;
+    padding: 10px;
+    min-width: 150px;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 10;
+}
+
+.skill-node:hover .skill-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Crafting Panel */
+.crafting-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 550px;
+    max-width: 95vw;
+    max-height: 85vh;
+    background: linear-gradient(135deg, rgba(20, 30, 50, 0.98), rgba(10, 15, 30, 0.98));
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 16px;
+    z-index: 600;
+    overflow: hidden;
+}
+
+.crafting-content {
+    padding: 20px;
+    max-height: calc(85vh - 60px);
+    overflow-y: auto;
+}
+
+.crafting-resources {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+.resource-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.crafting-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.craft-tab {
+    flex: 1;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.craft-tab.active {
+    background: rgba(0, 212, 255, 0.2);
+    border-color: #00d4ff;
+}
+
+.recipe-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.recipe-card.locked { opacity: 0.6; }
+.recipe-icon { font-size: 32px; }
+.recipe-info { flex: 1; }
+.recipe-name { font-weight: 600; }
+.recipe-desc { font-size: 12px; opacity: 0.7; }
+
+.recipe-ingredients {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+    font-size: 11px;
+}
+
+.recipe-ingredients .enough { color: #27ae60; }
+.recipe-ingredients .need { color: #e74c3c; }
+
+.craft-btn {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #FFD700, #ff6b35);
+    border: none;
+    border-radius: 8px;
+    color: #000;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.craft-btn:disabled {
+    background: #555;
+    color: #888;
+    cursor: not-allowed;
+}
+
+/* Challenge Modes Panel */
+.challenge-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    max-width: 95vw;
+    max-height: 80vh;
+    background: linear-gradient(135deg, rgba(20, 30, 50, 0.98), rgba(10, 15, 30, 0.98));
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 16px;
+    z-index: 600;
+    overflow: hidden;
+}
+
+.challenge-content {
+    padding: 20px;
+    max-height: calc(80vh - 60px);
+    overflow-y: auto;
+}
+
+.challenge-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.challenge-tab {
+    flex: 1;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.challenge-tab.active {
+    background: rgba(0, 212, 255, 0.2);
+    border-color: #00d4ff;
+}
+
+.challenge-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    border-left: 3px solid #00d4ff;
+}
+
+.challenge-card.hard { border-left-color: #e74c3c; }
+.challenge-card.medium { border-left-color: #f39c12; }
+.challenge-card.easy { border-left-color: #27ae60; }
+
+.challenge-card-icon { font-size: 28px; }
+.challenge-card-info { flex: 1; }
+.challenge-card-name { font-weight: 600; }
+.challenge-card-desc { font-size: 12px; opacity: 0.7; }
+
+.challenge-card-difficulty {
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    margin-top: 5px;
+    display: inline-block;
+}
+
+.challenge-hud {
+    position: fixed;
+    top: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(10, 15, 30, 0.95);
+    border: 2px solid #00d4ff;
+    border-radius: 12px;
+    padding: 15px 25px;
+    z-index: 600;
+    text-align: center;
+}
+
+.challenge-hud-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.challenge-hud-timer {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: #00d4ff;
+}
+
+.challenge-hud-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.challenge-hud-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00d4ff, #0066ff);
+}
+
+.challenge-complete-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.challenge-medal {
+    font-size: 80px;
+    animation: bounceIn 0.5s ease-out;
+}
+
+/* Photo Mode Panel */
+.photo-mode-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 800;
+    display: flex;
+    flex-direction: column;
+}
+
+.photo-mode-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background: rgba(10, 15, 30, 0.9);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.photo-mode-content {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    overflow: hidden;
+}
+
+.photo-controls {
+    width: 280px;
+    overflow-y: auto;
+}
+
+.photo-section {
+    margin-bottom: 20px;
+}
+
+.photo-section h4 {
+    font-size: 12px;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    color: #00d4ff;
+}
+
+.filter-grid, .frame-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.filter-btn, .frame-btn {
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+}
+
+.filter-btn.selected, .frame-btn.selected {
+    border-color: #00d4ff;
+    background: rgba(0, 212, 255, 0.1);
+}
+
+.filter-icon, .frame-icon {
+    font-size: 20px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.filter-name, .frame-name {
+    font-size: 9px;
+}
+
+.overlay-options label {
+    display: block;
+    padding: 8px 0;
+    cursor: pointer;
+}
+
+.photo-preview-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.photo-preview {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    padding: 10px;
+    min-width: 300px;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.photo-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.photo-btn {
+    padding: 12px 24px;
+    background: rgba(0, 212, 255, 0.2);
+    border: 1px solid rgba(0, 212, 255, 0.5);
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.photo-btn.capture {
+    background: linear-gradient(135deg, #00d4ff, #0066ff);
+    border: none;
+}
+
+.photo-gallery-section {
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.photo-gallery {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.gallery-item {
+    width: 80px;
+    height: 60px;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.photo-fullscreen img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+}
+
+/* Responsive for v6.0 */
+@media (max-width: 768px) {
+    .time-display {
+        right: 20px;
+        top: 110px;
+    }
+
+    .world-events-panel,
+    .pet-panel,
+    .treasure-hunt-panel,
+    .skill-tree-panel,
+    .crafting-panel,
+    .challenge-panel {
+        width: 95vw;
+    }
+
+    .pet-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .filter-grid, .frame-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .photo-mode-content {
+        flex-direction: column;
+    }
+
+    .photo-controls {
+        width: 100%;
+        max-height: 200px;
+    }
+}

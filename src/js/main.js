@@ -29,6 +29,16 @@ import { ProfileManager } from './profileManager.js';
 import { ParticleEffects } from './particleEffects.js';
 import { QuickTravel } from './quickTravel.js';
 
+// Ultimate features (v6.0)
+import { DayNightCycle } from './dayNightCycle.js';
+import { WorldEvents } from './worldEvents.js';
+import { PetCompanion } from './petCompanion.js';
+import { TreasureHunt } from './treasureHunt.js';
+import { SkillTree } from './skillTree.js';
+import { CraftingSystem } from './craftingSystem.js';
+import { ChallengeModes } from './challengeModes.js';
+import { PhotoMode } from './photoMode.js';
+
 class RoadWorldApp {
     constructor() {
         this.mapManager = null;
@@ -64,6 +74,16 @@ class RoadWorldApp {
         this.profileManager = null;
         this.particleEffects = null;
         this.quickTravel = null;
+
+        // Ultimate features (v6.0)
+        this.dayNightCycle = null;
+        this.worldEvents = null;
+        this.petCompanion = null;
+        this.treasureHunt = null;
+        this.skillTree = null;
+        this.craftingSystem = null;
+        this.challengeModes = null;
+        this.photoMode = null;
     }
 
     async init() {
@@ -124,10 +144,13 @@ class RoadWorldApp {
         // Initialize next-level features (v5.0)
         this.initNextLevelFeatures();
 
+        // Initialize ultimate features (v6.0)
+        this.initUltimateFeatures();
+
         // Make app globally accessible
         window.app = this;
 
-        console.log('RoadWorld v5.0 initialized - NEXT LEVEL!');
+        console.log('RoadWorld v6.0 initialized - ULTIMATE EDITION!');
     }
 
     initEnhancedFeatures() {
@@ -237,6 +260,114 @@ class RoadWorldApp {
 
         // Check for daily login
         this.checkDailyLogin();
+    }
+
+    initUltimateFeatures() {
+        // Day/Night Cycle
+        this.dayNightCycle = new DayNightCycle(this.mapManager, this.gameEngine, this.soundManager);
+        this.dayNightCycle.init();
+
+        // World Events
+        this.worldEvents = new WorldEvents(this.gameEngine, this.mapManager, this.storageManager);
+        this.worldEvents.init();
+
+        // Pet Companion
+        this.petCompanion = new PetCompanion(this.mapManager, this.gameEngine, this.storageManager);
+        this.petCompanion.init();
+
+        // Treasure Hunt
+        this.treasureHunt = new TreasureHunt(this.mapManager, this.gameEngine, this.storageManager);
+        this.treasureHunt.init();
+
+        // Skill Tree
+        this.skillTree = new SkillTree(this.gameEngine, this.storageManager);
+        this.skillTree.init();
+
+        // Crafting System
+        this.craftingSystem = new CraftingSystem(this.gameEngine, this.storageManager);
+        this.craftingSystem.init();
+
+        // Challenge Modes
+        this.challengeModes = new ChallengeModes(this.mapManager, this.gameEngine, this.storageManager);
+        this.challengeModes.init();
+
+        // Photo Mode
+        this.photoMode = new PhotoMode(this.mapManager, this.storageManager);
+        this.photoMode.init();
+
+        // Setup v6.0 controls
+        this.setupUltimateControls();
+    }
+
+    setupUltimateControls() {
+        // Day/Night toggle
+        const dayNightBtn = document.getElementById('btn-daynight');
+        if (dayNightBtn) {
+            dayNightBtn.addEventListener('click', () => {
+                // Cycle through time periods
+                const times = [6, 12, 18, 0]; // Dawn, Noon, Dusk, Midnight
+                const currentHour = Math.floor(this.dayNightCycle.gameTime / 60);
+                const nextIndex = times.findIndex(t => t > currentHour) || 0;
+                this.dayNightCycle.setTime(times[nextIndex]);
+                this.showNotification(`Time set to ${times[nextIndex]}:00`);
+            });
+        }
+
+        // World Events button
+        const eventsBtn = document.getElementById('btn-events');
+        if (eventsBtn) {
+            eventsBtn.addEventListener('click', () => {
+                this.worldEvents.toggle();
+            });
+        }
+
+        // Pet button
+        const petBtn = document.getElementById('btn-pet');
+        if (petBtn) {
+            petBtn.addEventListener('click', () => {
+                this.petCompanion.toggle();
+            });
+        }
+
+        // Treasure Hunt button
+        const huntBtn = document.getElementById('btn-hunt');
+        if (huntBtn) {
+            huntBtn.addEventListener('click', () => {
+                this.treasureHunt.toggle();
+            });
+        }
+
+        // Skills button
+        const skillsBtn = document.getElementById('btn-skills');
+        if (skillsBtn) {
+            skillsBtn.addEventListener('click', () => {
+                this.skillTree.toggle();
+            });
+        }
+
+        // Crafting button
+        const craftBtn = document.getElementById('btn-craft');
+        if (craftBtn) {
+            craftBtn.addEventListener('click', () => {
+                this.craftingSystem.toggle();
+            });
+        }
+
+        // Challenges button
+        const challengeBtn = document.getElementById('btn-challenge');
+        if (challengeBtn) {
+            challengeBtn.addEventListener('click', () => {
+                this.challengeModes.toggle();
+            });
+        }
+
+        // Photo Mode button
+        const photoBtn = document.getElementById('btn-photo');
+        if (photoBtn) {
+            photoBtn.addEventListener('click', () => {
+                this.photoMode.toggle();
+            });
+        }
     }
 
     setupNextLevelControls() {
