@@ -10,6 +10,14 @@ import { GameEngine } from './gameEngine.js';
 import { PlayerAvatar } from './playerAvatar.js';
 import { CollectiblesRenderer } from './collectiblesRenderer.js';
 
+// New enhanced features
+import { AchievementsManager } from './achievementsManager.js';
+import { MissionsManager } from './missionsManager.js';
+import { WeatherEffects } from './weatherEffects.js';
+import { SoundManager } from './soundManager.js';
+import { Minimap } from './minimap.js';
+import { StatisticsPanel } from './statisticsPanel.js';
+
 class RoadWorldApp {
     constructor() {
         this.mapManager = null;
@@ -26,6 +34,14 @@ class RoadWorldApp {
         this.playerAvatar = null;
         this.collectiblesRenderer = null;
         this.gameActive = false;
+
+        // Enhanced features (v4.0)
+        this.achievementsManager = null;
+        this.missionsManager = null;
+        this.weatherEffects = null;
+        this.soundManager = null;
+        this.minimap = null;
+        this.statisticsPanel = null;
     }
 
     async init() {
@@ -80,7 +96,79 @@ class RoadWorldApp {
         // Setup game toggle
         this.setupGameToggle();
 
-        console.log('RoadWorld initialized');
+        // Initialize enhanced features (v4.0)
+        this.initEnhancedFeatures();
+
+        console.log('RoadWorld v4.0 initialized with enhanced features');
+    }
+
+    initEnhancedFeatures() {
+        // Sound Manager (initialize first for audio feedback)
+        this.soundManager = new SoundManager();
+
+        // Achievements System
+        this.achievementsManager = new AchievementsManager(this.gameEngine, this.storageManager);
+
+        // Daily Missions
+        this.missionsManager = new MissionsManager(this.gameEngine, this.storageManager);
+
+        // Weather Effects
+        this.weatherEffects = new WeatherEffects(this.mapManager);
+        this.weatherEffects.init();
+
+        // Minimap
+        this.minimap = new Minimap(this.mapManager);
+        this.minimap.init();
+
+        // Statistics Panel
+        this.statisticsPanel = new StatisticsPanel(
+            this.gameEngine,
+            this.achievementsManager,
+            this.missionsManager
+        );
+        this.statisticsPanel.init();
+
+        // Setup enhanced feature controls
+        this.setupEnhancedControls();
+    }
+
+    setupEnhancedControls() {
+        // Stats button
+        const statsBtn = document.getElementById('btn-stats');
+        if (statsBtn) {
+            statsBtn.addEventListener('click', () => {
+                this.statisticsPanel.toggle();
+            });
+        }
+
+        // Weather toggle
+        const weatherBtn = document.getElementById('btn-weather');
+        if (weatherBtn) {
+            weatherBtn.addEventListener('click', () => {
+                const isActive = this.weatherEffects.toggle();
+                weatherBtn.classList.toggle('active', isActive);
+                this.showNotification(isActive ? 'Weather effects enabled' : 'Weather effects disabled');
+            });
+        }
+
+        // Sound toggle
+        const soundBtn = document.getElementById('btn-sound');
+        if (soundBtn) {
+            soundBtn.addEventListener('click', () => {
+                const isEnabled = this.soundManager.toggle();
+                soundBtn.classList.toggle('active', isEnabled);
+                soundBtn.textContent = isEnabled ? '🔊' : '🔇';
+                this.showNotification(isEnabled ? 'Sound enabled' : 'Sound muted');
+            });
+        }
+
+        // Minimap toggle
+        const minimapBtn = document.getElementById('btn-minimap');
+        if (minimapBtn) {
+            minimapBtn.addEventListener('click', () => {
+                this.minimap.toggle();
+            });
+        }
     }
 
     setupGameToggle() {
@@ -102,6 +190,11 @@ class RoadWorldApp {
     activateGameMode() {
         console.log('🎮 Game Mode Activated!');
 
+        // Initialize sound on user interaction
+        if (this.soundManager) {
+            this.soundManager.init();
+        }
+
         // Initialize game
         this.gameEngine.init();
 
@@ -117,11 +210,21 @@ class RoadWorldApp {
         // Setup map movement to generate collectibles
         this.mapManager.map.on('moveend', this.onMapMoveGame.bind(this));
 
+        // Setup collectible collection handler
+        this.collectiblesRenderer.onCollect = (collectible) => {
+            this.onCollectItem(collectible);
+        };
+
         // Initial HUD update
         this.updateGameHUD();
 
         // Show collectibles
         this.collectiblesRenderer.renderAll();
+
+        // Play ambient sound
+        if (this.soundManager) {
+            this.soundManager.playAmbient('explore');
+        }
 
         this.showNotification('🎮 Game Mode Activated! Click to move your avatar.');
     }
@@ -149,16 +252,31 @@ class RoadWorldApp {
 
         const lngLat = [e.lngLat.lng, e.lngLat.lat];
 
+        // Play move sound
+        if (this.soundManager) {
+            this.soundManager.playMove();
+        }
+
         // Move player
         const distance = this.gameEngine.movePlayer(lngLat);
 
         // Update avatar position
         this.playerAvatar.updatePosition(lngLat);
 
+        // Update minimap player position
+        if (this.minimap) {
+            this.minimap.updatePlayerPosition(lngLat);
+        }
+
         // Award XP for movement (1 XP per 10 meters)
         if (distance > 10) {
             const xp = Math.floor(distance / 10);
             this.gameEngine.addXP(xp, 'movement');
+
+            // Update missions
+            if (this.missionsManager) {
+                this.missionsManager.updateProgress('xp', xp);
+            }
         }
 
         // Check for level up
@@ -167,11 +285,94 @@ class RoadWorldApp {
             this.onLevelUp(levelUp);
         }
 
+        // Check achievements
+        this.checkAchievements();
+
         // Update HUD
         this.updateGameHUD();
 
         // Refresh visible collectibles
         this.collectiblesRenderer.refreshVisibleCollectibles();
+    }
+
+    onCollectItem(collectible) {
+        // Play collection sound
+        if (this.soundManager) {
+            this.soundManager.playCollect(collectible.rarity);
+        }
+
+        // Update missions
+        if (this.missionsManager) {
+            this.missionsManager.updateProgress('item', 1);
+            this.missionsManager.updateProgress(collectible.type, 1);
+        }
+
+        // Show collection notification
+        this.showCollectionNotification(collectible);
+
+        // Check achievements
+        this.checkAchievements();
+
+        // Update HUD
+        this.updateGameHUD();
+    }
+
+    showCollectionNotification(collectible) {
+        const notification = document.createElement('div');
+        notification.className = `collection-notification ${collectible.rarity}`;
+        notification.innerHTML = `
+            <div class="collection-icon">${collectible.icon}</div>
+            <div class="collection-info">
+                <div class="collection-name">${collectible.type.charAt(0).toUpperCase() + collectible.type.slice(1)}</div>
+                <div class="collection-xp">+${collectible.xp} XP</div>
+            </div>
+        `;
+        document.body.appendChild(notification);
+
+        // Animate in
+        setTimeout(() => notification.classList.add('show'), 10);
+
+        // Remove after delay
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 2000);
+    }
+
+    checkAchievements() {
+        if (!this.achievementsManager || !this.gameEngine.player) return;
+
+        const newAchievements = this.achievementsManager.checkAchievements(this.gameEngine.player);
+
+        newAchievements.forEach(achievement => {
+            this.showAchievementNotification(achievement);
+            if (this.soundManager) {
+                this.soundManager.playAchievement();
+            }
+        });
+    }
+
+    showAchievementNotification(achievement) {
+        const notification = document.createElement('div');
+        notification.className = `achievement-notification ${achievement.rarity}`;
+        notification.innerHTML = `
+            <div class="achievement-unlock-icon">${achievement.icon}</div>
+            <div class="achievement-unlock-info">
+                <div class="achievement-unlock-title">Achievement Unlocked!</div>
+                <div class="achievement-unlock-name">${achievement.name}</div>
+                <div class="achievement-unlock-xp">+${achievement.xpReward} XP</div>
+            </div>
+        `;
+        document.body.appendChild(notification);
+
+        // Animate in
+        setTimeout(() => notification.classList.add('show'), 10);
+
+        // Remove after delay
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 4000);
     }
 
     onMapMoveGame() {
@@ -188,8 +389,16 @@ class RoadWorldApp {
     onLevelUp(levelInfo) {
         console.log(`🎉 LEVEL UP! Now level ${levelInfo.level}`);
 
+        // Play level up sound
+        if (this.soundManager) {
+            this.soundManager.playLevelUp();
+        }
+
         // Update avatar
         this.playerAvatar.updateLevel();
+
+        // Check achievements on level up
+        this.checkAchievements();
 
         // Show special notification
         const notification = document.createElement('div');
@@ -235,6 +444,17 @@ class RoadWorldApp {
             `${(stats.distanceTraveled / 1000).toFixed(2)} km`;
         document.getElementById('hud-distance').textContent = distanceKm;
         document.getElementById('hud-collected').textContent = stats.itemsCollected;
+
+        // Missions and Achievements
+        if (this.missionsManager) {
+            const completedMissions = this.missionsManager.getCompletedCount();
+            document.getElementById('hud-missions').textContent = completedMissions;
+        }
+
+        if (this.achievementsManager) {
+            const unlockedCount = this.achievementsManager.unlockedAchievements.size;
+            document.getElementById('hud-achievements').textContent = unlockedCount;
+        }
     }
 
     setupMapEvents() {

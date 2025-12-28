@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlackRoad Earth | RoadWorld Module</title>
+    <title>BlackRoad Earth | RoadWorld v4.0</title>
 
     <!-- MapLibre GL -->
     <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
@@ -156,6 +156,10 @@
         <button class="ctrl-btn" id="btn-measure" title="Measure Distance">📏</button>
         <button class="ctrl-btn" id="btn-share" title="Share Location">🔗</button>
         <button class="ctrl-btn" id="btn-tools" title="More Tools">🛠️</button>
+        <div class="divider"></div>
+        <button class="ctrl-btn" id="btn-stats" title="Statistics">📊</button>
+        <button class="ctrl-btn active" id="btn-weather" title="Weather Effects">🌤️</button>
+        <button class="ctrl-btn active" id="btn-sound" title="Sound">🔊</button>
     </div>
 
     <!-- Instructions -->
@@ -275,6 +279,8 @@
             <div style="font-size: 11px; line-height: 1.6;">
                 <div>🚶 <span id="hud-distance">0 m</span></div>
                 <div>✨ <span id="hud-collected">0</span> items</div>
+                <div>🎯 <span id="hud-missions">0</span>/3 missions</div>
+                <div>🏆 <span id="hud-achievements">0</span> achievements</div>
             </div>
         </div>
     </div>
