@@ -1274,3 +1274,754 @@ body {
     0%, 100% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.6); }
     50% { box-shadow: 0 0 40px rgba(123, 47, 247, 0.8); }
 }
+
+/* ==================== ENHANCED FEATURES v4.0 ==================== */
+
+/* Weather Effects Container */
+.weather-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 50;
+}
+
+#weather-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.weather-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: background 1s;
+}
+
+.lightning-flash {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 51;
+    animation: flash 0.1s;
+    pointer-events: none;
+}
+
+@keyframes flash {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}
+
+/* Time of Day Tints */
+body[data-time="dawn"] { }
+body[data-time="day"] { }
+body[data-time="dusk"] { }
+body[data-time="night"] { }
+
+/* Minimap */
+.minimap-container {
+    position: fixed;
+    bottom: 180px;
+    right: 20px;
+    width: 200px;
+    background: rgba(10, 15, 30, 0.95);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 12px;
+    overflow: hidden;
+    z-index: 100;
+    transition: all 0.3s;
+}
+
+.minimap-container.expanded {
+    width: 350px;
+}
+
+.minimap-container.expanded .minimap {
+    height: 280px;
+}
+
+.minimap-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(0, 212, 255, 0.1);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.minimap-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    opacity: 0.7;
+}
+
+.minimap-controls {
+    display: flex;
+    gap: 4px;
+}
+
+.minimap-btn {
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: rgba(0, 212, 255, 0.2);
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.minimap-btn:hover {
+    background: rgba(0, 212, 255, 0.4);
+}
+
+.minimap-wrapper {
+    position: relative;
+    height: 150px;
+}
+
+.minimap {
+    width: 100%;
+    height: 100%;
+}
+
+.minimap-compass {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    border: 2px solid rgba(0, 212, 255, 0.5);
+}
+
+.compass-needle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2px;
+    height: 16px;
+    background: linear-gradient(to bottom, #ff4444, #fff);
+    transform-origin: 50% 100%;
+    transform: translate(-50%, -100%);
+    transition: transform 0.3s;
+}
+
+.compass-label {
+    position: absolute;
+    font-size: 7px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.compass-label.north { top: 2px; left: 50%; transform: translateX(-50%); color: #ff4444; }
+.compass-label.south { bottom: 2px; left: 50%; transform: translateX(-50%); }
+.compass-label.east { right: 2px; top: 50%; transform: translateY(-50%); }
+.compass-label.west { left: 2px; top: 50%; transform: translateY(-50%); }
+
+.minimap-player-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: #00d4ff;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #00d4ff;
+    pointer-events: none;
+}
+
+.minimap-player-marker .player-dot {
+    width: 10px;
+    height: 10px;
+    background: #00d4ff;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+}
+
+.minimap-player-marker .player-direction {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 8px solid #00d4ff;
+}
+
+.minimap-coords {
+    padding: 6px 12px;
+    font-size: 10px;
+    font-family: 'Orbitron', sans-serif;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* Statistics Panel */
+.statistics-panel {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    max-width: 90vw;
+    max-height: 80vh;
+    background: rgba(10, 15, 30, 0.98);
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    border-radius: 16px;
+    backdrop-filter: blur(20px);
+    overflow: hidden;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+}
+
+.stats-content {
+    padding: 0;
+}
+
+.stats-tabs {
+    display: flex;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.stats-tab {
+    flex: 1;
+    padding: 12px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: 'Exo 2', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.stats-tab:hover {
+    color: #fff;
+    background: rgba(0, 212, 255, 0.1);
+}
+
+.stats-tab.active {
+    color: #00d4ff;
+    background: rgba(0, 212, 255, 0.15);
+    border-bottom: 2px solid #00d4ff;
+}
+
+.stats-tab-content {
+    padding: 20px;
+    max-height: calc(80vh - 120px);
+    overflow-y: auto;
+}
+
+/* Profile Section */
+.stats-profile {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px;
+    background: rgba(0, 212, 255, 0.05);
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.profile-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #00d4ff;
+    margin-bottom: 4px;
+}
+
+.profile-level {
+    font-size: 14px;
+    color: #FFD700;
+    margin-bottom: 8px;
+}
+
+.profile-xp-bar {
+    height: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+
+.profile-xp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00d4ff, #7b2ff7);
+    border-radius: 4px;
+    transition: width 0.3s;
+}
+
+.profile-xp-text {
+    font-size: 10px;
+    opacity: 0.6;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.stat-card {
+    padding: 16px;
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 10px;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.stat-card:hover {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.4);
+}
+
+.stat-card-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.stat-card-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    color: #00d4ff;
+    margin-bottom: 4px;
+}
+
+.stat-card-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.6;
+}
+
+/* Achievements */
+.achievements-progress {
+    margin-bottom: 20px;
+}
+
+.achievements-progress-bar {
+    height: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.achievements-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00d4ff, #7b2ff7, #FFD700);
+    border-radius: 5px;
+    transition: width 0.5s;
+}
+
+.achievements-progress-text {
+    font-size: 12px;
+    text-align: center;
+    opacity: 0.7;
+}
+
+.achievement-category {
+    margin-bottom: 20px;
+}
+
+.achievement-category h4 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+    color: #00d4ff;
+}
+
+.achievement-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.achievement-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    border-left: 3px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.2s;
+}
+
+.achievement-item.unlocked {
+    background: rgba(0, 212, 255, 0.1);
+}
+
+.achievement-item.locked {
+    opacity: 0.5;
+}
+
+.achievement-item.common { border-left-color: #fff; }
+.achievement-item.rare { border-left-color: #00d4ff; }
+.achievement-item.epic { border-left-color: #7b2ff7; }
+.achievement-item.legendary { border-left-color: #FFD700; }
+
+.achievement-icon {
+    font-size: 24px;
+}
+
+.achievement-info {
+    flex: 1;
+}
+
+.achievement-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+
+.achievement-desc {
+    font-size: 11px;
+    opacity: 0.6;
+}
+
+.achievement-reward {
+    font-size: 11px;
+    color: #FFD700;
+    font-weight: 600;
+}
+
+/* Missions */
+.missions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 12px;
+    background: rgba(0, 212, 255, 0.1);
+    border-radius: 8px;
+}
+
+.missions-timer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.timer-icon {
+    font-size: 16px;
+}
+
+.missions-claimable {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #000;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    animation: pulse 2s infinite;
+}
+
+.missions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.mission-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+
+.mission-item.completed {
+    border-color: rgba(0, 255, 100, 0.4);
+    background: rgba(0, 255, 100, 0.05);
+}
+
+.mission-item.claimed {
+    opacity: 0.5;
+}
+
+.mission-icon {
+    font-size: 28px;
+}
+
+.mission-info {
+    flex: 1;
+}
+
+.mission-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.mission-desc {
+    font-size: 11px;
+    opacity: 0.6;
+    margin-bottom: 8px;
+}
+
+.mission-progress-bar {
+    height: 6px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+
+.mission-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00d4ff, #7b2ff7);
+    border-radius: 3px;
+    transition: width 0.3s;
+}
+
+.mission-progress-text {
+    font-size: 10px;
+    opacity: 0.6;
+}
+
+.mission-reward {
+    text-align: right;
+}
+
+.claim-btn {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border: none;
+    border-radius: 8px;
+    color: #000;
+    font-weight: 700;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.claim-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+}
+
+/* Inventory */
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.inventory-item-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 10px;
+}
+
+.inv-icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.inv-count {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 20px;
+    color: #00d4ff;
+    margin-bottom: 4px;
+}
+
+.inv-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.6;
+}
+
+.inventory-total {
+    text-align: center;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.recent-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.recent-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    font-size: 11px;
+}
+
+.recent-item.common { border: 1px solid rgba(255, 255, 255, 0.3); }
+.recent-item.rare { border: 1px solid rgba(0, 212, 255, 0.5); }
+.recent-item.epic { border: 1px solid rgba(123, 47, 247, 0.5); }
+.recent-item.legendary { border: 1px solid rgba(255, 215, 0, 0.5); }
+
+.recent-item-icon {
+    font-size: 16px;
+}
+
+.recent-item-rarity {
+    font-size: 9px;
+    text-transform: uppercase;
+    opacity: 0.5;
+}
+
+/* Achievement Notification */
+.achievement-notification {
+    position: fixed;
+    top: 80px;
+    right: -400px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 24px;
+    background: rgba(10, 15, 30, 0.98);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 1002;
+    border-left: 4px solid;
+}
+
+.achievement-notification.show {
+    right: 20px;
+}
+
+.achievement-notification.common { border-left-color: #fff; }
+.achievement-notification.rare { border-left-color: #00d4ff; }
+.achievement-notification.epic { border-left-color: #7b2ff7; }
+.achievement-notification.legendary {
+    border-left-color: #FFD700;
+    animation: legendaryGlow 1s infinite alternate;
+}
+
+@keyframes legendaryGlow {
+    from { box-shadow: 0 8px 32px rgba(255, 215, 0, 0.2); }
+    to { box-shadow: 0 8px 48px rgba(255, 215, 0, 0.5); }
+}
+
+.achievement-unlock-icon {
+    font-size: 40px;
+}
+
+.achievement-unlock-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.6;
+    margin-bottom: 4px;
+}
+
+.achievement-unlock-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    color: #00d4ff;
+    margin-bottom: 4px;
+}
+
+.achievement-unlock-xp {
+    font-size: 12px;
+    color: #FFD700;
+    font-weight: 600;
+}
+
+/* Weather Info Overlay */
+.weather-info {
+    position: fixed;
+    top: 75px;
+    right: 300px;
+    padding: 8px 16px;
+    background: rgba(10, 15, 30, 0.9);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 20px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 100;
+}
+
+.weather-icon {
+    font-size: 18px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .minimap-container {
+        width: 150px;
+        bottom: 160px;
+    }
+
+    .minimap-wrapper {
+        height: 100px;
+    }
+
+    .statistics-panel {
+        width: 95vw;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .inventory-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
