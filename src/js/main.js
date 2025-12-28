@@ -10,13 +10,24 @@ import { GameEngine } from './gameEngine.js';
 import { PlayerAvatar } from './playerAvatar.js';
 import { CollectiblesRenderer } from './collectiblesRenderer.js';
 
-// New enhanced features
+// Enhanced features (v4.0)
 import { AchievementsManager } from './achievementsManager.js';
 import { MissionsManager } from './missionsManager.js';
 import { WeatherEffects } from './weatherEffects.js';
 import { SoundManager } from './soundManager.js';
 import { Minimap } from './minimap.js';
 import { StatisticsPanel } from './statisticsPanel.js';
+
+// Next-level features (v5.0)
+import { KeyboardControls } from './keyboardControls.js';
+import { StreakManager } from './streakManager.js';
+import { ComboSystem } from './comboSystem.js';
+import { PowerUpsManager } from './powerUpsManager.js';
+import { ScreenshotCapture } from './screenshotCapture.js';
+import { LeaderboardPanel } from './leaderboardPanel.js';
+import { ProfileManager } from './profileManager.js';
+import { ParticleEffects } from './particleEffects.js';
+import { QuickTravel } from './quickTravel.js';
 
 class RoadWorldApp {
     constructor() {
@@ -42,6 +53,17 @@ class RoadWorldApp {
         this.soundManager = null;
         this.minimap = null;
         this.statisticsPanel = null;
+
+        // Next-level features (v5.0)
+        this.keyboardControls = null;
+        this.streakManager = null;
+        this.comboSystem = null;
+        this.powerUpsManager = null;
+        this.screenshotCapture = null;
+        this.leaderboardPanel = null;
+        this.profileManager = null;
+        this.particleEffects = null;
+        this.quickTravel = null;
     }
 
     async init() {
@@ -99,7 +121,13 @@ class RoadWorldApp {
         // Initialize enhanced features (v4.0)
         this.initEnhancedFeatures();
 
-        console.log('RoadWorld v4.0 initialized with enhanced features');
+        // Initialize next-level features (v5.0)
+        this.initNextLevelFeatures();
+
+        // Make app globally accessible
+        window.app = this;
+
+        console.log('RoadWorld v5.0 initialized - NEXT LEVEL!');
     }
 
     initEnhancedFeatures() {
@@ -171,6 +199,153 @@ class RoadWorldApp {
         }
     }
 
+    initNextLevelFeatures() {
+        // Particle Effects (initialize first for visual feedback)
+        this.particleEffects = new ParticleEffects();
+        this.particleEffects.init();
+
+        // Combo System
+        this.comboSystem = new ComboSystem(this.gameEngine);
+
+        // Power-ups Manager
+        this.powerUpsManager = new PowerUpsManager(this.gameEngine, this.storageManager);
+
+        // Streak Manager
+        this.streakManager = new StreakManager(this.gameEngine, this.storageManager);
+
+        // Screenshot Capture
+        this.screenshotCapture = new ScreenshotCapture(this.mapManager);
+
+        // Leaderboard Panel
+        this.leaderboardPanel = new LeaderboardPanel(this.gameEngine, this.storageManager);
+        this.leaderboardPanel.init();
+
+        // Profile Manager
+        this.profileManager = new ProfileManager(this.gameEngine, this.storageManager);
+        this.profileManager.init();
+
+        // Quick Travel
+        this.quickTravel = new QuickTravel(this.mapManager, this.gameEngine, this.storageManager);
+        this.quickTravel.init();
+
+        // Keyboard Controls (initialize last)
+        this.keyboardControls = new KeyboardControls(this.mapManager, this.gameEngine, this.playerAvatar);
+        this.keyboardControls.init();
+
+        // Setup v5.0 controls
+        this.setupNextLevelControls();
+
+        // Check for daily login
+        this.checkDailyLogin();
+    }
+
+    setupNextLevelControls() {
+        // Screenshot button
+        const screenshotBtn = document.getElementById('btn-screenshot');
+        if (screenshotBtn) {
+            screenshotBtn.addEventListener('click', () => {
+                this.screenshotCapture.preview();
+            });
+        }
+
+        // Leaderboard button
+        const leaderboardBtn = document.getElementById('btn-leaderboard');
+        if (leaderboardBtn) {
+            leaderboardBtn.addEventListener('click', () => {
+                this.leaderboardPanel.toggle();
+            });
+        }
+
+        // Profile button
+        const profileBtn = document.getElementById('btn-profile');
+        if (profileBtn) {
+            profileBtn.addEventListener('click', () => {
+                this.profileManager.toggle();
+            });
+        }
+
+        // Quick Travel button
+        const travelBtn = document.getElementById('btn-travel');
+        if (travelBtn) {
+            travelBtn.addEventListener('click', () => {
+                this.quickTravel.toggle();
+            });
+        }
+
+        // Keyboard toggle (activates with game mode)
+        const keyboardBtn = document.getElementById('btn-keyboard');
+        if (keyboardBtn) {
+            keyboardBtn.addEventListener('click', () => {
+                const isEnabled = this.keyboardControls.toggle();
+                keyboardBtn.classList.toggle('active', isEnabled);
+                this.showNotification(isEnabled ? 'WASD controls enabled' : 'WASD controls disabled');
+            });
+        }
+    }
+
+    checkDailyLogin() {
+        const result = this.streakManager.checkLogin();
+
+        if (result.isNewDay && !result.streakContinues && result.streak > 1) {
+            // Streak was broken - show message
+            setTimeout(() => {
+                this.showNotification('Streak reset! Start a new one today!');
+            }, 2000);
+        } else if (result.isNewDay) {
+            // Show daily reward popup
+            setTimeout(() => {
+                this.showDailyRewardPopup(result);
+            }, 1500);
+        }
+    }
+
+    showDailyRewardPopup(result) {
+        const reward = result.reward;
+        if (!reward) return;
+
+        const popup = document.createElement('div');
+        popup.className = 'daily-reward-popup';
+        popup.innerHTML = `
+            <div class="daily-popup-content">
+                <div class="daily-popup-header">
+                    <span class="fire-icon">🔥</span>
+                    <span class="streak-count">${result.streak} Day Streak!</span>
+                </div>
+                <div class="daily-popup-reward">
+                    <div class="reward-title">Today's Reward</div>
+                    <div class="reward-xp">+${reward.xp} XP</div>
+                    <div class="reward-items">
+                        ${Object.entries(reward.items || {}).map(([item, count]) =>
+                            `<span class="reward-item">${this.getItemIcon(item)} x${count}</span>`
+                        ).join('')}
+                    </div>
+                    ${reward.bonus ? `<div class="reward-bonus">🌟 ${reward.bonus}</div>` : ''}
+                </div>
+                <button class="daily-claim-btn" id="claim-daily">Claim Reward!</button>
+            </div>
+        `;
+
+        document.body.appendChild(popup);
+
+        document.getElementById('claim-daily').addEventListener('click', () => {
+            this.streakManager.claimDailyReward();
+            popup.classList.add('fade-out');
+            setTimeout(() => popup.remove(), 500);
+
+            if (this.soundManager) {
+                this.soundManager.playAchievement();
+            }
+            if (this.particleEffects) {
+                this.particleEffects.levelUpBurst(window.innerWidth / 2, window.innerHeight / 2);
+            }
+        });
+    }
+
+    getItemIcon(item) {
+        const icons = { stars: '⭐', gems: '💎', trophies: '🏆', keys: '🗝️' };
+        return icons[item] || '✨';
+    }
+
     setupGameToggle() {
         const toggle = document.getElementById('game-toggle');
 
@@ -215,6 +390,11 @@ class RoadWorldApp {
             this.onCollectItem(collectible);
         };
 
+        // Enable keyboard controls
+        if (this.keyboardControls) {
+            this.keyboardControls.enable();
+        }
+
         // Initial HUD update
         this.updateGameHUD();
 
@@ -226,7 +406,7 @@ class RoadWorldApp {
             this.soundManager.playAmbient('explore');
         }
 
-        this.showNotification('🎮 Game Mode Activated! Click to move your avatar.');
+        this.showNotification('🎮 Game Mode Activated! Use WASD or click to move.');
     }
 
     deactivateGameMode() {
@@ -240,6 +420,11 @@ class RoadWorldApp {
 
         // Clear collectibles
         this.collectiblesRenderer.clearAll();
+
+        // Disable keyboard controls
+        if (this.keyboardControls) {
+            this.keyboardControls.disable();
+        }
 
         // Remove map click handler (would need to track the handler)
         // For now, game click will just be ignored when not active
@@ -296,9 +481,39 @@ class RoadWorldApp {
     }
 
     onCollectItem(collectible) {
+        // Register combo and get multiplier
+        let xpMultiplier = 1;
+        if (this.comboSystem) {
+            const comboResult = this.comboSystem.registerCollection(collectible);
+            xpMultiplier = comboResult.multiplier;
+        }
+
+        // Apply power-up XP multiplier
+        if (this.powerUpsManager) {
+            xpMultiplier *= this.powerUpsManager.getXPMultiplier();
+        }
+
+        // Apply streak bonus
+        if (this.streakManager) {
+            xpMultiplier *= this.streakManager.getXPMultiplier();
+        }
+
+        // Calculate final XP
+        const finalXP = Math.floor(collectible.xp * xpMultiplier);
+
         // Play collection sound
         if (this.soundManager) {
             this.soundManager.playCollect(collectible.rarity);
+        }
+
+        // Show particle effects
+        if (this.particleEffects) {
+            const screenPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+            this.particleEffects.collectionBurst(screenPos.x, screenPos.y, collectible.rarity);
+
+            if (xpMultiplier > 1) {
+                this.particleEffects.xpPopup(screenPos.x, screenPos.y - 50, finalXP);
+            }
         }
 
         // Update missions
@@ -307,24 +522,54 @@ class RoadWorldApp {
             this.missionsManager.updateProgress(collectible.type, 1);
         }
 
-        // Show collection notification
-        this.showCollectionNotification(collectible);
+        // Show collection notification (with bonus info)
+        this.showCollectionNotification(collectible, xpMultiplier);
 
         // Check achievements
         this.checkAchievements();
+
+        // Check for power-up drops (rare chance)
+        this.checkPowerUpDrop(collectible);
 
         // Update HUD
         this.updateGameHUD();
     }
 
-    showCollectionNotification(collectible) {
+    checkPowerUpDrop(collectible) {
+        if (!this.powerUpsManager) return;
+
+        // Higher rarity = higher drop chance
+        const dropChance = collectible.rarity === 'legendary' ? 0.5 :
+                           collectible.rarity === 'epic' ? 0.2 :
+                           collectible.rarity === 'rare' ? 0.05 : 0.01;
+
+        if (Math.random() < dropChance) {
+            const powerUp = this.powerUpsManager.grantRandomPowerUp();
+            if (powerUp) {
+                this.showNotification(`⚡ Power-up: ${powerUp.name}!`);
+                if (this.soundManager) {
+                    this.soundManager.playAchievement();
+                }
+            }
+        }
+    }
+
+    showCollectionNotification(collectible, xpMultiplier = 1) {
+        const finalXP = Math.floor(collectible.xp * xpMultiplier);
         const notification = document.createElement('div');
         notification.className = `collection-notification ${collectible.rarity}`;
+
+        let bonusText = '';
+        if (xpMultiplier > 1) {
+            bonusText = `<div class="collection-bonus">x${xpMultiplier.toFixed(1)} BONUS!</div>`;
+        }
+
         notification.innerHTML = `
             <div class="collection-icon">${collectible.icon}</div>
             <div class="collection-info">
                 <div class="collection-name">${collectible.type.charAt(0).toUpperCase() + collectible.type.slice(1)}</div>
-                <div class="collection-xp">+${collectible.xp} XP</div>
+                <div class="collection-xp">+${finalXP} XP${xpMultiplier > 1 ? ' 🔥' : ''}</div>
+                ${bonusText}
             </div>
         `;
         document.body.appendChild(notification);
