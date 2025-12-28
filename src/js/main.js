@@ -39,6 +39,17 @@ import { CraftingSystem } from './craftingSystem.js';
 import { ChallengeModes } from './challengeModes.js';
 import { PhotoMode } from './photoMode.js';
 
+// Legendary features (v7.0)
+import { WeatherSystem } from './weatherSystem.js';
+import { MultiplayerPresence } from './multiplayerPresence.js';
+import { AchievementSystem } from './achievementSystem.js';
+import { SeasonalEvents } from './seasonalEvents.js';
+import { BaseBuilding } from './baseBuilding.js';
+import { NPCQuestSystem } from './npcQuestSystem.js';
+import { VehicleSystem } from './vehicleSystem.js';
+import { MiniGamesArcade } from './miniGamesArcade.js';
+import { GuildSystem } from './guildSystem.js';
+
 class RoadWorldApp {
     constructor() {
         this.mapManager = null;
@@ -84,6 +95,17 @@ class RoadWorldApp {
         this.craftingSystem = null;
         this.challengeModes = null;
         this.photoMode = null;
+
+        // Legendary features (v7.0)
+        this.weatherSystem = null;
+        this.multiplayerPresence = null;
+        this.achievementSystem = null;
+        this.seasonalEvents = null;
+        this.baseBuilding = null;
+        this.npcQuestSystem = null;
+        this.vehicleSystem = null;
+        this.miniGamesArcade = null;
+        this.guildSystem = null;
     }
 
     async init() {
@@ -147,10 +169,13 @@ class RoadWorldApp {
         // Initialize ultimate features (v6.0)
         this.initUltimateFeatures();
 
+        // Initialize legendary features (v7.0)
+        this.initLegendaryFeatures();
+
         // Make app globally accessible
         window.app = this;
 
-        console.log('RoadWorld v6.0 initialized - ULTIMATE EDITION!');
+        console.log('RoadWorld v7.0 initialized - LEGENDARY EDITION!');
     }
 
     initEnhancedFeatures() {
@@ -368,6 +393,177 @@ class RoadWorldApp {
                 this.photoMode.toggle();
             });
         }
+    }
+
+    initLegendaryFeatures() {
+        // Weather System
+        this.weatherSystem = new WeatherSystem(this);
+        window.weatherSystem = this.weatherSystem;
+
+        // Multiplayer Presence
+        this.multiplayerPresence = new MultiplayerPresence(this);
+        window.multiplayerPresence = this.multiplayerPresence;
+
+        // Achievement System (v7.0 enhanced)
+        this.achievementSystem = new AchievementSystem(this);
+        window.achievementSystem = this.achievementSystem;
+
+        // Seasonal Events
+        this.seasonalEvents = new SeasonalEvents(this);
+
+        // Base Building
+        this.baseBuilding = new BaseBuilding(this);
+        window.baseBuilding = this.baseBuilding;
+
+        // NPC Quest System
+        this.npcQuestSystem = new NPCQuestSystem(this);
+        window.npcQuestSystem = this.npcQuestSystem;
+
+        // Vehicle System
+        this.vehicleSystem = new VehicleSystem(this);
+        window.vehicleSystem = this.vehicleSystem;
+
+        // Mini-Games Arcade
+        this.miniGamesArcade = new MiniGamesArcade(this);
+        window.miniGamesArcade = this.miniGamesArcade;
+
+        // Guild System
+        this.guildSystem = new GuildSystem(this);
+        window.guildSystem = this.guildSystem;
+
+        // Setup v7.0 controls
+        this.setupLegendaryControls();
+    }
+
+    setupLegendaryControls() {
+        // Weather button
+        const weatherBtn = document.getElementById('btn-weather-sys');
+        if (weatherBtn) {
+            weatherBtn.addEventListener('click', () => {
+                this.weatherSystem.showPanel();
+            });
+        }
+
+        // Multiplayer button
+        const multiplayerBtn = document.getElementById('btn-multiplayer');
+        if (multiplayerBtn) {
+            multiplayerBtn.addEventListener('click', () => {
+                this.multiplayerPresence.showPanel();
+            });
+        }
+
+        // Achievements button
+        const achieveBtn = document.getElementById('btn-achievements');
+        if (achieveBtn) {
+            achieveBtn.addEventListener('click', () => {
+                this.achievementSystem.showPanel();
+            });
+        }
+
+        // Seasonal events button
+        const seasonBtn = document.getElementById('btn-seasonal');
+        if (seasonBtn) {
+            seasonBtn.addEventListener('click', () => {
+                this.seasonalEvents.showPanel();
+            });
+        }
+
+        // Base building button
+        const baseBtn = document.getElementById('btn-base');
+        if (baseBtn) {
+            baseBtn.addEventListener('click', () => {
+                this.baseBuilding.showPanel();
+            });
+        }
+
+        // Quests button
+        const questBtn = document.getElementById('btn-quests');
+        if (questBtn) {
+            questBtn.addEventListener('click', () => {
+                this.npcQuestSystem.showPanel();
+            });
+        }
+
+        // Vehicle button
+        const vehicleBtn = document.getElementById('btn-vehicle');
+        if (vehicleBtn) {
+            vehicleBtn.addEventListener('click', () => {
+                this.vehicleSystem.showPanel();
+            });
+        }
+
+        // Arcade button
+        const arcadeBtn = document.getElementById('btn-arcade');
+        if (arcadeBtn) {
+            arcadeBtn.addEventListener('click', () => {
+                this.miniGamesArcade.showPanel();
+            });
+        }
+
+        // Guild button
+        const guildBtn = document.getElementById('btn-guild');
+        if (guildBtn) {
+            guildBtn.addEventListener('click', () => {
+                this.guildSystem.showPanel();
+            });
+        }
+    }
+
+    // Helper methods for v7.0 systems
+    getResources() {
+        if (this.gameEngine && this.gameEngine.player) {
+            const inv = this.gameEngine.getInventorySummary();
+            return { stars: inv.stars || 0, gems: inv.gems || 0 };
+        }
+        return { stars: 0, gems: 0 };
+    }
+
+    spendResources(stars, gems) {
+        if (this.gameEngine && this.gameEngine.player) {
+            if (stars > 0) this.gameEngine.player.inventory.stars -= stars;
+            if (gems > 0) this.gameEngine.player.inventory.gems -= gems;
+            this.gameEngine.savePlayer();
+            this.updateGameHUD();
+        }
+    }
+
+    addStars(amount) {
+        if (this.gameEngine && this.gameEngine.player) {
+            this.gameEngine.player.inventory.stars += amount;
+            this.gameEngine.savePlayer();
+            this.updateGameHUD();
+        }
+    }
+
+    addGems(amount) {
+        if (this.gameEngine && this.gameEngine.player) {
+            this.gameEngine.player.inventory.gems += amount;
+            this.gameEngine.savePlayer();
+            this.updateGameHUD();
+        }
+    }
+
+    addXP(amount) {
+        if (this.gameEngine) {
+            this.gameEngine.addXP(amount, 'bonus');
+            this.updateGameHUD();
+        }
+    }
+
+    get level() {
+        return this.gameEngine?.player?.level || 1;
+    }
+
+    get map() {
+        return this.mapManager?.map || null;
+    }
+
+    get currentPosition() {
+        if (this.playerAvatar && this.playerAvatar.position) {
+            return { lat: this.playerAvatar.position[1], lng: this.playerAvatar.position[0] };
+        }
+        const center = this.mapManager?.getCenter();
+        return center ? { lat: center.lat, lng: center.lng } : null;
     }
 
     setupNextLevelControls() {
